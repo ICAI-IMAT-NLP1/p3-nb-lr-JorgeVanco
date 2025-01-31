@@ -79,7 +79,9 @@ class SentimentExample:
         raise NotImplemented
 
 
-def evaluate_classification(predictions: torch.Tensor, labels: torch.Tensor) -> Dict[str, float]:
+def evaluate_classification(
+    predictions: torch.Tensor, labels: torch.Tensor
+) -> Dict[str, float]:
     """
     Evaluate classification metrics including accuracy, precision, recall, and F1-score.
 
@@ -91,5 +93,23 @@ def evaluate_classification(predictions: torch.Tensor, labels: torch.Tensor) -> 
         dict: A dictionary containing the calculated metrics.
     """
     metrics: Dict[str, float] = None
+    accuracy = (predictions == labels).sum() / labels.shape[0]
+    positive_predictions = predictions == 1
+
+    precision = (
+        predictions[positive_predictions] == labels[positive_predictions]
+    ).sum() / positive_predictions.sum()
+    recall = (
+        predictions[positive_predictions] == labels[positive_predictions]
+    ).sum() / labels.sum()
+
+    f1_score = 2 * (precision * recall) / (precision + recall)
+
+    metrics = {
+        "accuracy": accuracy,
+        "precision": precision,
+        "recall": recall,
+        "f1_score": f1_score,
+    }
 
     return metrics
