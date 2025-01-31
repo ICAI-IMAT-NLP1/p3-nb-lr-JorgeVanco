@@ -22,7 +22,7 @@ def read_sentiment_examples(infile: str) -> List[SentimentExample]:
     examples: List[SentimentExample] = []
     with open(infile) as f:
         for line in f:
-            sentence, label = line.split("\t")
+            sentence, label = line.rsplit("\t", 1)
             label: int = int(label)
             sentence: list[str] = tokenize(sentence)
             examples.append(SentimentExample(sentence, label))
